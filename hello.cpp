@@ -12,6 +12,7 @@
 #include<chrono>
 using namespace std;
 int main_exit;
+const int MAX = 26; 
 
 void fordelay(int);
 void close(void);
@@ -28,6 +29,7 @@ class sort_arr{
 };
 //for all info
 void quickSort(sort_arr arr[], int low, int high) ;
+
 class node3{
     public:
         string name;
@@ -77,50 +79,62 @@ class info{
 class str_hashing{
     public:
     void insert(long long int n,string s,node1 *N){
-        int key=0;
+        long long int key=0;
         for(int i=0;i<s.length();i++){
             key+=int(s[i])*pow(31,i);
         }
         key=key%20;
         
         in[key].key=key;
-        in[key].next=NULL;
-        node4 *n1;
+        
+        
         node4 *temp=new node4();
         temp->acc_no=n;
         temp->name=s;
         temp->next1=N;
+		
+		in[key].key=key;
         if(in[key].next==NULL){
+			//cout<<s<<"in the first loop"<<endl;
+			
            in[key].next=temp;
+		   //cout<<in[key].next<<","<<temp<<endl;
         }
         else{
+			node4 *n1;
             n1=in[key].next;
+			
             while(n1->next2!=NULL){
+				//cout<<s<<"12"<<endl;
                 n1=n1->next2;
             }
-            temp=n1->next2;
+            n1->next2=temp;
 
             
         }
     }
     node4* search(string s){
-        int key=0;
+        long long int key=0;
         for(int i=0;i<s.length();i++){
             key+=int(s[i])*pow(31,i);
         }
         key=key%20;
+		// cout<<key<<endl;
         node4 *temp;
-        
+        //cout<<2;
         temp=in[key].next;
+		//cout<<"temp name"<<temp->name<<" s"<<s;
         if(temp->name==s){
             return temp;
         }
+		
         
-        while(temp->name!=s && temp!=NULL){
-            cout<<1<<endl;
+        while(temp->name!=s ){
+            //cout<<1<<endl<<"in the loop"<<temp->name;
             temp=temp->next2;
+			//cout<<"in the loop"<<temp->name;
         }
-        return temp->next2;
+        return temp;
 
     }
 
@@ -143,7 +157,7 @@ class hashing{
         // cout<<"in loop"<<endl;
         }
         else{
-			 cout<<"in out loop"<<endl;
+			 //cout<<"in out loop"<<endl;
             node2 *temp;
             temp=arr[v_key].next;
             while(temp->next2!=NULL){
@@ -174,17 +188,17 @@ class hashing{
 class Bank{
 public:
     string account_number;
-	string name;
-    string dob;
-    string age;
-    string date;
-    string address;
-    string phone;
-    string doc;
-    string depo;
-    string acc_type;
-    string password;
-    string interest;
+	string name;          //completed
+    string dob;				//completed
+    string age;				//completed
+    string date;			//completed
+    string address;			//completed
+    string phone;			//completed
+    string doc;				//completed
+    string depo;			//completed
+    string acc_type;		//completed
+    string password;		//completed
+    string interest;		//completed
 public:
     void read_data();
     void acc_write();
@@ -678,19 +692,33 @@ void Bank::search_rec()
     {   
 		cout<<"Enter the Name of Account Holder:";
         cin>>name_s;
-        do
-        {
-        	getline(is,account_number, ',');
-       		getline(is, name, ',');
-       		getline(is, dob, ',');
-       		getline(is, age, ',');
-       		getline(is, address, ',');
-      		getline(is, phone, ',');
-       		getline(is, depo, ',');
-      		getline(is, acc_type, ',');
-      		getline(is, date, ',');
-      		getline(is, doc,',');
-      		getline(is, interest, '\n');
+		node4* record;
+		record=ha1.search(name_s);
+        //do
+        //{
+        	// getline(is,account_number, ',');
+       		// getline(is, name, ',');
+       		// getline(is, dob, ',');
+       		// getline(is, age, ',');
+       		// getline(is, address, ',');
+      		// getline(is, phone, ',');
+       		// getline(is, depo, ',');
+      		// getline(is, acc_type, ',');
+      		// getline(is, date, ',');
+      		// getline(is, doc,',');
+      		// getline(is, interest, '\n');
+		if(record!=NULL){
+			account_number=record->acc_no;
+			name=record->name;
+			dob=record->next1->next->next1->dob;
+			age=record->next1->next->next1->age;
+			address=record->next1->next->next1->address;
+			phone=record->next1->next->next1->phone;
+			depo=record->next1->next->next1->depo;
+			acc_type=record->next1->next->next1->acc_type;
+			date=record->next1->next->next1->date;
+			doc=record->next1->next->next1->doc;
+			interest=record->next1->next->next1->interest;
         	amount = atoi(depo.c_str());
     		if(name_s == name)
             {   
@@ -708,7 +736,7 @@ void Bank::search_rec()
 				ifstream file ( "Bank_Record.csv" );
 				ofstream ofile ( "temp.csv" );
 				
-            	if(acc_type == "Saving")
+            	if(acc_type == "savings")
                 {
                 	time_t now = time(0);
 					struct tm *ltm = localtime(&now);
@@ -740,9 +768,9 @@ void Bank::search_rec()
 						cout<<"\n\nYou will get Rs 0 as interest "
 								<<"for today...";
 					}
-					break;                    
+					//break;                    
                 }
-                else if(acc_type == "Current")
+                else if(acc_type == "current")
                 {
                     time_t now = time(0);
 					struct tm *ltm = localtime(&now);
@@ -773,11 +801,15 @@ void Bank::search_rec()
 					{
 						cout<<"\n\nYou will get Rs 0 as interest for today...";
 					}
-					break;
+					//break;
 				}
-            }
-        }while (is.good());
+			}
+        }
+        //}while (is.good());
     }
+	else{
+		
+	}
     if(test == 0)
     {
     	cout<<"\n\n\t\tAccount doesn't Exist!";
@@ -1243,6 +1275,7 @@ void Bank::insert(){
     	node2 *n1=new node2();
 		node3 *n2=new node3();
 		n2->name=name;
+		//cout<<name<<"1"<<endl;
 		n2->dob=dob;
 		n2->age=age;
 		n2->date=date;
@@ -1256,13 +1289,16 @@ void Bank::insert(){
 		n1->account_no=stoi(account_number);
 		ha.insert(n1,n2);
 		
+		int accc1=stoi(account_number)%30;
 		
-		
-		//ha1.insert(account_number,name,&arr[stoi(account_number)%30]);
+		ha1.insert(stoi(account_number),name,& arr[accc1]);
 		if(sz == (sz1))
 		break;
 	}
 	//cout<<arr[21].next->next2->password;
+	// node4*temp1;
+	// temp1=ha1.search("rohan");
+	// cout<<temp1->next1->next->next1->age;
 	
 }
 
@@ -1342,8 +1378,9 @@ void employee()
 }
 
 void Bank::filter(){
-	int n=2;
+	int n=57;
 	sort_arr s[n];
+	
 	double amount;
 	ifstream is("Bank_record.csv");
 	int i=0,sz=0,sz1=0;
@@ -1352,10 +1389,11 @@ void Bank::filter(){
 	sz=is.tellg();
 	//cout<<sz<<endl;
 	is.seekg(0,ios::beg);
+	//cout<<"before reading"<<endl;
 	while (!is.eof())
     {
     	//cout<<i<<". ";
-    	
+    	//cout<<"in the loop"<<endl;
     	getline(is,account_number, ',');
        	getline(is, name, ',');
        	getline(is, dob, ',');
@@ -1371,8 +1409,10 @@ void Bank::filter(){
         amount = atoi(depo.c_str());
         sz1=is.tellg();
         //cout<<sz1<<" ";
+		//cout<<"before arrinsert"<<endl;
     	s[i].amount=amount;
 		s[i].account_number=stoi(account_number);
+		//cout<<"after arr insert"<<endl;
 		//cout<<s[i].account_number<<"this is it m";
 		i++;
 		//ha1.insert(account_number,name,&arr[stoi(account_number)%30]);
@@ -1390,9 +1430,9 @@ void Bank::filter(){
 	<<"========================================================="
 	<<"=========================\n";
 	
-	
-	quickSort(s,0,n);
-	
+	//cout<<"before sort "<<endl;
+	quickSort(s,0,n-1);
+	//cout<<"after sort"<<endl;
 	node3* temp;
 	for(int i=0;i<n;i++){
 		//cout<<"in the loop"<<endl;
@@ -1643,10 +1683,15 @@ int count(){
 	return j;
 }
 
-void swap(double &p,double &q){
-    double temp=p;
-    p=q;
-    q=temp;
+void swap(sort_arr *p,sort_arr *q){
+    sort_arr *temp=new sort_arr();
+	temp->account_number=p->account_number;
+	temp->amount=p->amount;
+	p->amount=q->amount;
+	p->account_number=q->account_number;
+	q->account_number=temp->account_number;
+	q->amount=temp->amount;
+    
 
 }
 
@@ -1660,11 +1705,13 @@ int partition (sort_arr arr[], int low, int high,int *p2)
         if (arr[j].amount <= pivot) 
         { 
             i++; 
-            swap(arr[i].amount, arr[j].amount); 
+			
+            swap(&arr[i], &arr[j]); 
               
         } 
     } 
-    swap(arr[i + 1].amount, arr[high].amount);
+	
+    swap(&arr[i + 1], &arr[high]);
     
     for(int j=i+1;j>-1;j--){
         if(arr[j].amount!=pivot){
@@ -1690,6 +1737,95 @@ void quickSort(sort_arr arr[], int low, int high)
     } 
 }
 
+string printRandomString(int n) 
+{ 
+    char alphabet[MAX] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 
+                          'h', 'i', 'j', 'k', 'l', 'm', 'n',  
+                          'o', 'p', 'q', 'r', 's', 't', 'u', 
+                          'v', 'w', 'x', 'y', 'z' }; 
+  
+    string res = ""; 
+    for (int i = 0; i < n; i++)  
+        res = res + alphabet[rand() % MAX]; 
+      
+    return res; 
+}
+//for faking the data in csv for testing
+void faker(){
+	srand(time(0)); 
+	for(int i=0;i<50;i++){
+		Retry:
+		int ar=rand();
+	long long int a=ar%100000000+10000000;
+	string account_number=to_string(a);
+	ifstream is("Account_info.csv");
+	string acc_no;
+	string password1;
+	do
+    {
+       	getline(is,acc_no, ',');
+       	getline(is,password1, '\n');
+		   //cout<<acc_no<<account_number<<endl;
+    	if(acc_no == account_number)
+    	{
+    		cout<<"in retry"<<endl;
+    			goto Retry;
+				break;
+    		
+    	}
+    	
+	}while(is.good());
+	
+	
+   int n = 10; 
+   string name=printRandomString(n); 
+   int date =ar%30+1;
+   int month=ar%11+1;
+   int  year=ar%(2020-2000)+2000;
+   string dob=to_string(date)+"/"+to_string(month)+"/"+to_string(year);
+   int date1 =ar%30+1;
+   int month1=ar%11+1;
+   int  year1=ar%(2020-2000)+2000;
+   string date_to_rem=to_string(date1)+"/"+to_string(month1)+"/"+to_string(year1);
+   int date2 =ar%30+1;
+   int month2=ar%11+1;
+   int  year2=ar%(2020-2000)+2000;
+   string doc=to_string(date2)+"/"+to_string(month2)+"/"+to_string(year2);
+   double arr[6]={12234,23456,5678,12450,12356,245756};
+   int g=ar%(6-1)+1;
+   string depo=to_string(arr[g]);
+   string  age=to_string(ar%(70-18)+18);
+    string address="warangal";
+    string phone=to_string(ar%(10000000000-8000000000)+8000000000);
+    string p2[2]={"savings","current"};
+    string acc_type=p2[ar%2];
+    string password=printRandomString(n);
+    string intrest=to_string(5);
+	ofstream MyFile1, MyFile2;
+	int x,i=0;
+	//string acc_no;
+	time_t now = time(0);
+    string dt = ctime(&now);
+	
+	
+	ostringstream str1;
+	
+    a=ar%100000000+10000000;
+	str1<<a;
+	account_number=str1.str();
+	//	cout<<account_number;
+    //ifstream is("Account_info.csv");
+	MyFile1.open("Bank_Record.csv", ios::out|ios::app);
+	MyFile1<<account_number<<","<<name<<","<<dob<<","
+		   <<age<<","<<address<<","<<phone<<","<<depo
+		   <<","<<acc_type<<","<<dt<<","<<doc<<","<<intrest<<","<<"\n";
+	MyFile1.close();
+	MyFile2.open("Account_info.csv", ios::out|ios::app);
+	MyFile2<<account_number<<","<<password<<","<<"\n"; 
+	MyFile2.close();
+	}
+}
+
 int main()
 {
 	int ch, i;
@@ -1713,9 +1849,8 @@ int main()
 	cout<<"\n\t\tEnter Your Choice: ";
 	cin>>ch;
 	Bank b;
+	//faker();
 	b.insert();
-	
-	
 	switch(ch)
 	{
 		case 1: employee();
